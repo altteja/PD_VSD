@@ -155,6 +155,24 @@ Creation of single height standard cell and plug this custom cell into a more co
 
 Use `box` command in tkcon of magice tool to find minimum grid size and correct scale, include libs and correct model name of device in netlist before performing spice simulations.
 
+#### Lab
+Git Clone std cell 
+> ![OpenLane workflow](Images/clone_inv_git.png)
+
+Identification of layout as CMOS inverter
+> ![OpenLane workflow](Images/identify_inverter_from_magic.png)
+
+Extract spice netlist from Layout
+> ![OpenLane workflow](Images/tkcon_spice_netlist.png)
+
+Transient simulation of CMOS inverter
+> ![OpenLane workflow](Images/spice_netlist_inv_std_cell.png)
+> ![OpenLane workflow](Images/transitent_inv.png)
+
+ 
+
+
+
 ---
         
 ## 16 mask CMOS process
