@@ -178,9 +178,27 @@ DRC violations after loading modified tech file.
 ### DRC Rule styles 
 Any edge based rule can be made with cif output operators but generating these layers is compute intensive. To keep Magic from being slowed down, its best to use simple DRC edge based rules whenever possilbe and keep cif output rules in separate variant of DRC as shown below.
 
-> ![OpenLane workflow](Images/DRC rules types.png)
+> ![OpenLane workflow](Images/DRC_rules_types.png)
 
 Here, DRC fast intended for checking BOEL layers till Metal layers. DRC full checks layers below metal layers as well (compute intensive)    
+Switch between styles using `drc style drc(fast)`
+
+### Identification of untapped nwell layers (nwell.4)
+
+Creates a DRC rule for nwell unappted connections using cif operations in DRC full mode.
+> ![OpenLane workflow](Images/nwell_untapped_new_rule.png)
+
+1.Create temp layer nwell_tapped using bloat-all operation on nsc (ncontact) to fill any nwell underneath it.
+> ![OpenLane workflow](Images/nwell_tapped.png)
+
+2.Remove all nwell_tapped geometries from nwell to identify nwells witout contacts
+> ![OpenLane workflow](Images/nwell_untapped.png)
+
+When tech file reloaded, set drc style to full and performed DRC check, we can see DRC violation is flagged for nwell without contact (left) but on right no DRC violation is falgged since it has nwell contact (right).
+> ![OpenLane workflow](Images/result_nwell_untapped.png)
+
+
+---
 
 
 ---
@@ -209,7 +227,37 @@ Transient simulation of CMOS inverter
 > ![OpenLane workflow](Images/spice_netlist_inv_std_cell.png)
 > ![OpenLane workflow](Images/transitent_inv.png)
 
+ ### LEF generation of std cell
  
+Tracks.info file is present in pdk directory and these tracks will be used for routing. 
+> ![OpenLane workflow](Images/tacks.info.png)
+
+Enable grid in magic using command `grid [xspacing [yspacing [xorigin yorigin]]]` in current scenario `grid 0.46um 0.34um 0.23um 0.17um`
+
+
+Width of standard cell should be odd multiple of X pitch and Height of standard cell should be odd multiple of Y pitch.
+Signal ports should be at the intersection of horizonatal and vertical tracks. Refer to `https://github.com/nickson-jose/vsdstdcelldesign` for LEF creation.
+
+### Use custom inverter cell into openlane flow
+1.Copy the LEF of inverter cell along with the lib files containg the characterized data for the custom cell in `<design>/src` folder.
+
+2.Open `<design>/config.tcl` and set env variables for syntesis and timing libraries lib files from src folder and run synthesis again.
+
+Before delay-area optimization following are the area and dealy stats for the design.
+> ![OpenLane workflow](Images/before_opt.png)
+
+Setup dealy-area optimization algorithms as follows without exiting the openlane flow. Refer to `openlane/configuration/README.md` for more details on env variables.
+
+`% set ::env(SYNTH_STRATEGY) "DELAY 3"`
+
+`% set ::env(SYNTH_BUFFERING) 1`
+
+`% set ::env(SYNTH_SIZING) 1`
+
+After delay-area optimization following are the area and dealy stats for the design.
+> ![OpenLane workflow](Images/after_opt.png)
+
+
 
 
 
