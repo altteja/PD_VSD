@@ -145,6 +145,39 @@ designs/<design_name>
 
 ---
 
+## Magice features and DRC cheks
+Lab instance for DRC rules with Magic with sample layouts (.mag) are downloaded. The source file .magicrc present in labs folder (drc_tests) contains the local copy of tech file so we need not specify -T <tech file> while invoking magic. Since we might need to edit the tech file to add DRC checks, it s better to use local copy of tech file.
+> ![OpenLane workflow](Images/magic_drc_labs_download.png)
+> ![OpenLane workflow](Images/local_tech_file_in_magic_src_file.png )
+
+Invoke Magic with `magic -d XR` command for better graphics, load poly.mag to add missing DRC rules in tech file. 
+`(poly.9) Poly resistor spacing to poly or spacing (no overlap) to diff/tap 0.480 µm`  
+
+In layout, for poly.9 0.48 spacing is required. But npoly and poly are only 0.22 um apart and no violation is flagged.  
+
+### Modification 1 :
+We have to edit the tech file to add DRC check and redo DRC to see if it shows DRC violation.
+> ![OpenLane workflow](Images/add_drc_poly_spacing_1.png)
+> ![OpenLane workflow](Images/add_drc_poly_spacing_2.png )
+
+After adding DRC check in tech file and redoing DRC, violation is flagged for spacing. (highlighted in yellow)
+> ![OpenLane workflow](Images/reload_tech_file_and_drc.png)
+
+### Modification 2 :
+
+Since tech file only has violation of noplyres to ntap, DRC violation is not flagged between noplyres and pdiff
+> ![OpenLane workflow](Images/DRC_viol_before.png)
+
+Changed spacing rule between npres and *nsd to npres and alldiff.
+> ![OpenLane workflow](Images/DRC_rule_mod2.png)
+
+DRC violations after loading modified tech file.
+> ![OpenLane workflow](Images/DRC_viol_after.png)
+
+
+
+---
+
 ## Standard cell layout design in Magic
 Creation of single height standard cell and plug this custom cell into a more complex design and perform it's PnR in the openlane flow. The standard cell chosen is a basic CMOS inverter and the design into which it's plugged into is a pre-built picorv32a core. Refer [Github link](https://github.com/nickson-jose/vsdstdcelldesign) for more details.
 
