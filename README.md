@@ -125,7 +125,7 @@ designs/<design_name>
 
 ### 4. Placement
 
-- `run_floorplan` : performs congestion aware (not timing aware) placement.
+- `run_placement` : performs congestion aware (not timing aware) placement.
   - __Global placement__ uses HPWL concept (half parameter wire length) to achieve reduction of wire length in OpenLane.
   - __Detailed placement__ performs legalization i.e., placement of standard cells in rows and ensuring no overlaps.
   - __runs/\<tag\>/results/placement/\<design\>.placement.def__ : DEF generated after placement stage.
@@ -137,7 +137,7 @@ designs/<design_name>
 > ![OpenLane workflow](Images/magic_placement.png)
 
 ### 5. CTS
-
+- `run_cts` : performs congestion aware (not timing aware) placement.
 .
 .
 .
@@ -238,17 +238,23 @@ Enable grid in magic using command `grid [xspacing [yspacing [xorigin yorigin]]]
 Width of standard cell should be odd multiple of X pitch and Height of standard cell should be odd multiple of Y pitch.
 Signal ports should be at the intersection of horizonatal and vertical tracks. Refer to `https://github.com/nickson-jose/vsdstdcelldesign` for LEF creation.
 
-### Use custom inverter cell into openlane flow
+### * * * Use custom inverter cell into openlane flow * * *
 1.Copy the LEF of inverter cell along with the lib files containg the characterized data for the custom cell in `<design>/src` folder.
 
 2.Open `<design>/config.tcl` and set env variables for syntesis and timing libraries lib files from src folder and run synthesis again.
 
+#### Intial steps
+`./flow.tcl -interactive`
+
+`prep -design <design_name>`
+
+#### Synthesis
 Before delay-area optimization following are the area and dealy stats for the design.
 > ![OpenLane workflow](Images/before_opt.png)
 
 Setup dealy-area optimization algorithms as follows without exiting the openlane flow. Refer to `openlane/configuration/README.md` for more details on env variables.
 
-`% set ::env(SYNTH_STRATEGY) "DELAY 3"`
+`% set ::env(SYNTH_STRATEGY) "DELAY 0"`
 
 `% set ::env(SYNTH_BUFFERING) 1`
 
@@ -256,6 +262,57 @@ Setup dealy-area optimization algorithms as follows without exiting the openlane
 
 After delay-area optimization following are the area and dealy stats for the design.
 > ![OpenLane workflow](Images/after_opt.png)
+
+#### Floorplan
+
+`run_floorplan` fails in new flow as below.
+> ![OpenLane workflow](Images/floorplan_fail_updated_flow.png)
+
+#### Steps to complete flow without errors
+
+```
+init_floorplan
+place_io
+global_placement_or
+detailed_placement
+tap_decap_or
+detailed_placement
+gen_pdn
+run_routing
+```
+> ![OpenLane workflow](Images/floorplan_with_custom_cells.png )
+
+#### Optimize synthesis to reduce setup violations
+
+A1. STA configuration file :  (Netlist: dealy 0 optimized synthesized verilog before synthesis optimization for setup violations)
+![image](https://user-images.githubusercontent.com/107250836/178065830-46fa1c30-b2bd-44fa-bc5d-ddf39de4dcb8.png)
+
+A2. SDC file used for sta analysis
+
+![image](https://user-images.githubusercontent.com/107250836/178065311-bff9353f-58b2-44f1-b8e3-5b033a78c5d2.png)
+
+- Pickup base sdc file from default scripts area and set clock period and driving cell : `openlane/scripts/base.sdc`
+
+Result A : 
+
+Due to high fanouts, higher delays are observed
+
+![image](https://user-images.githubusercontent.com/107250836/178066605-5fce1db5-23e9-40aa-a270-7a5634ee846e.png)
+![image](https://user-images.githubusercontent.com/107250836/178066649-a0865ada-9ca9-4dd5-b150-4d0d7e135b5b.png)
+
+Modification 1 : Change the max_fanout using `set ::env(SYNTH_MAX_FANOUT) 4` and rerun the synthesis. Use this netlist to run sta again.
+![image](https://user-images.githubusercontent.com/107250836/178067391-1f695922-7aa9-4c7e-929d-e699cd691ab0.png)
+
+B1 : After executing multiple `replace_cell <instance_name> <lib_cellname>` in the path to get the wns less than - 1 ns and tns close to -10 ns. The timing path is as follows. (Tip: Identify and Replace high delay/high slew cauisng cells from the beginning of the path by increasing the drive of the cells to reduce wns and tns, Keep max_fanout to 4)
+
+![image](https://user-images.githubusercontent.com/107250836/178082385-e4361437-9ddc-4f6b-9b37-8c7bd363e6ca.png)
+![image](https://user-images.githubusercontent.com/107250836/178082503-c6e273c4-62f7-4aeb-9552-e37c33bac347.png)
+![image](https://user-images.githubusercontent.com/107250836/178082513-e45410a9-5acb-48b0-b88d-7e89d32312ee.png)
+![image](https://user-images.githubusercontent.com/107250836/178082541-3975ecb2-cb21-40fc-a30a-a951e6f3fe15.png)
+
+
+
+
 
 
 
