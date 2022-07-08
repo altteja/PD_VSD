@@ -175,6 +175,13 @@ DRC violations after loading modified tech file.
 > ![OpenLane workflow](Images/DRC_viol_after.png)
 
 
+### DRC Rule styles 
+Any edge based rule can be made with cif output operators but generating these layers is compute intensive. To keep Magic from being slowed down, its best to use simple DRC edge based rules whenever possilbe and keep cif output rules in separate variant of DRC as shown below.
+
+> ![OpenLane workflow](Images/DRC rules types.png)
+
+Here, DRC fast intended for checking BOEL layers till Metal layers. DRC full checks layers below metal layers as well (compute intensive)    
+
 
 ---
 
