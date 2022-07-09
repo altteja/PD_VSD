@@ -360,9 +360,9 @@ In interactive shell,
      ![image](https://user-images.githubusercontent.com/107250836/178085906-bd960223-caf7-48f9-9f55-46233d5aa7cd.png)
      ![image](https://user-images.githubusercontent.com/107250836/178085917-8fac758f-a616-4ef9-bdb6-78c804beefd4.png)
      
- - After cts in detailed routing , actual metal traces are being laid capacitances and resistances of these come into picture. so this should increase data arrival time, which wil help in improving hold violation
+    - After cts in detailed routing , actual metal traces are being laid capacitances and resistances of these come into picture. so this should increase data arrival time, which wil help in improving hold violation
 
-- We have used typical library for synthesis but for analysis we are using min, max libraries so analysis is not corret . We exit from openroad but not from openlane, invoke openroad and set typ lib and do analysis. (Use $::env(LIB_SYNTH_COMPLETE) 
+    - We have used typical library for synthesis but for analysis we are using min, max libraries so analysis is not corret . We exit from openroad but not from openlane, invoke openroad and set typ lib and do analysis. (Use $::env(LIB_SYNTH_COMPLETE) 
 
   ![image](https://user-images.githubusercontent.com/107250836/178086107-69285036-d222-438e-b286-5265db36405f.png)
   
@@ -375,9 +375,10 @@ In interactive shell,
   ![image](https://user-images.githubusercontent.com/107250836/178086178-d32ce5fe-cf68-4abd-94c6-1c0648ea8d7d.png)
   ![image](https://user-images.githubusercontent.com/107250836/178086192-e382b353-e078-46fb-aa4b-6103d017a8e1.png)
   
+```
 Setup slack : 5.3569 ns 
 Hold slack : -0.0112 ns
-
+```
 #### Experiment :  remove drive1 cells in clock buffer cell list. i.e., use only 2,4,8 drive cells as clock buffer. (Do not forget to change CURRENT_DEF to placement def first)
 
   ![image](https://user-images.githubusercontent.com/107250836/178086452-504a3665-9f10-4aac-b26e-8a77674bf1be.png)
@@ -397,10 +398,27 @@ Hold slack : -0.0112 ns
    ![image](https://user-images.githubusercontent.com/107250836/178087102-e40d54a9-6d8d-4e4a-9065-d90ff80fa79c.png)
    ![image](https://user-images.githubusercontent.com/107250836/178087110-48c6758d-67d0-4dbc-8a03-f310e4e3da33.png)
 
+```
  Setup slack : 5.6283 ns
  Hold slack : 0.3949 ns
- 
-- Usage for only high drive cells as clock buffers has improved slack.
+``` 
+   - Usage for only high drive cells as clock buffers has improved slack.
+
+#### Clock skew : 
+
+  ![image](https://user-images.githubusercontent.com/107250836/178087391-f3957636-884b-4f81-9ac6-b3a34c66cbce.png)
+  
+  
+  - Note : Reinsert the removed clock buffer with drive 1 back into CTS_CLK_BUFFER_LIST variable.
+
+- `gen_pdn` : generates PG network. done after CTS. In `tmp/floorplan` folder pdn.def is generated containing PG rounting + CTS def.
+    
+    ![image](https://user-images.githubusercontent.com/107250836/178088470-35caeb71-7ae4-4f43-82a6-a580398bd1cd.png)
+    ![image](https://user-images.githubusercontent.com/107250836/178088495-5c187bb1-5a93-42fd-9d87-94df1c5b4613.png)
+    ![image](https://user-images.githubusercontent.com/107250836/178088505-dc909fcc-de94-4944-9687-5f24c75ed363.png)
+
+- `run_routing` : (a) global route creates routing guides, (b) detail route algorithm picks best possible route and places geometries.
+
  
 
 
