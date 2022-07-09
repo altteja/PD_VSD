@@ -231,6 +231,7 @@ Transient simulation of CMOS inverter
  ### LEF generation of std cell
  
 Tracks.info file is present in pdk directory and these tracks will be used for routing. 
+
 > ![OpenLane workflow](Images/tacks.info.png)
 
 Enable grid in magic using command `grid [xspacing [yspacing [xorigin yorigin]]]` in current scenario `grid 0.46um 0.34um 0.23um 0.17um`
@@ -287,13 +288,14 @@ run_routing
 #### * * * * * Optimize synthesis to reduce setup violations * * * *
 
 A1. STA configuration file :  (Netlist: dealy 0 optimized synthesized verilog before synthesis optimization for setup violations)
+
 ![image](https://user-images.githubusercontent.com/107250836/178065830-46fa1c30-b2bd-44fa-bc5d-ddf39de4dcb8.png)
 
 A2. SDC file used for sta analysis
 
 ![image](https://user-images.githubusercontent.com/107250836/178065311-bff9353f-58b2-44f1-b8e3-5b033a78c5d2.png)
 
-- Pickup base sdc file from default scripts area and set clock period and driving cell : `openlane/scripts/base.sdc`
+- Hint: Pickup base sdc file from default scripts area and set clock period and driving cell : `openlane/scripts/base.sdc`
 
 Result A : 
 
@@ -303,6 +305,7 @@ Due to high fanouts, higher delays are observed
 ![image](https://user-images.githubusercontent.com/107250836/178066649-a0865ada-9ca9-4dd5-b150-4d0d7e135b5b.png)
 
 Modification 1 : Change the max_fanout using `set ::env(SYNTH_MAX_FANOUT) 4` and rerun the synthesis. Use this netlist to run sta again.
+
 ![image](https://user-images.githubusercontent.com/107250836/178067391-1f695922-7aa9-4c7e-929d-e699cd691ab0.png)
 
 B1 : After executing multiple `replace_cell <instance_name> <lib_cellname>` in the path to get the wns less than - 1 ns and tns close to -10 ns. The timing path is as follows. (Tip: Identify and Replace high delay/high slew cauisng cells from the beginning of the path by increasing the drive of the cells to reduce wns and tns, Keep max_fanout to 4)
@@ -313,7 +316,9 @@ B1 : After executing multiple `replace_cell <instance_name> <lib_cellname>` in t
 ![image](https://user-images.githubusercontent.com/107250836/178082541-3975ecb2-cb21-40fc-a30a-a951e6f3fe15.png)
 
 Overwrite the existing verilog file (generated from synthesis having high tns/wns) with current verilog file from sta(with less tns/wns).
+
 `write_verilog <tag>/results/synthesis/<design>.synthesis.v`
+
 ![image](https://user-images.githubusercontent.com/107250836/178082993-84172361-5d01-4365-a0b0-4f5c809dd127.png)
 
 ---
