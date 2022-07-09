@@ -283,7 +283,7 @@ run_routing
 ```
 > ![OpenLane workflow](Images/floorplan_with_custom_cells.png )
 
-#### Optimize synthesis to reduce setup violations
+#### * * * * * Optimize synthesis to reduce setup violations * * * *
 
 A1. STA configuration file :  (Netlist: dealy 0 optimized synthesized verilog before synthesis optimization for setup violations)
 ![image](https://user-images.githubusercontent.com/107250836/178065830-46fa1c30-b2bd-44fa-bc5d-ddf39de4dcb8.png)
@@ -318,12 +318,15 @@ Overwrite the existing verilog file (generated from synthesis having high tns/wn
 In interactive shell, 
 - `run_floorplan` which will take replaced netlist form synthesis area (have better tns/wns).
   - if floorplan fails, run `init_floorplan`, `place_io`,`global_placement_or`, `tap_decap_or` commands.
+  
   ![image](https://user-images.githubusercontent.com/107250836/178083354-126253e3-fdc7-4558-ab8d-9518e4a95867.png)
   ![image](https://user-images.githubusercontent.com/107250836/178083364-f12a672c-c98e-45a0-81ba-386f0a1c06fb.png)
   ![image](https://user-images.githubusercontent.com/107250836/178083445-e3fb6a61-b4ad-4080-9573-e9f33649b51e.png)
   ![image](https://user-images.githubusercontent.com/107250836/178083462-8f390d3c-3812-4141-addf-c71398c74ec9.png)
   ![image](https://user-images.githubusercontent.com/107250836/178083478-07c80011-36bc-4e2f-a809-d8e7040686d4.png)
+  
 - `run_placement` 
+
   ![image](https://user-images.githubusercontent.com/107250836/178083595-a17d5b94-263b-4fe0-9c2a-1f36b12ac14f.png)
 
 - `run_cts` : after CTS stage, (a)new verilog file with cts data in `results/synthesis` folder is generated. (b)in `results/cts` folder def is generated.
@@ -331,35 +334,74 @@ In interactive shell,
     
     ![image](https://user-images.githubusercontent.com/107250836/178083690-a7a0ed0c-c03a-4707-b118-402e6ea4292e.png)
     ![image](https://user-images.githubusercontent.com/107250836/178083852-d14aead0-8959-488e-828b-69a328537333.png)
+    
 - `openroad` : Invoke  openroad to do timing analysis to use existing env variables instead of defining in separating config file.
   - `read_lef` and `read_def` commands are used to read in merged.lef in tmp folder and <design>.cts.def in `results/cts` folder.
+  
      ![image](https://user-images.githubusercontent.com/107250836/178085000-c757e5ee-2587-4589-b83c-cfe6c3b91f34.png)
+     
   - `write_db <design>.db` : to save the database and `read_db <design>.db` : to read in existing database.
   -  `read_verilog` : to read in verilog file form CTS stage in results/synthesis folder.
   -  `read_liberty` : To read in liberty files, -min : fast.lib ; -max : slow.lib
+  -  `link_design <design name>`
   -  `read_sdc` : Read in sdc file.
+  
     ![image](https://user-images.githubusercontent.com/107250836/178085765-08cc1bb3-04bf-4309-aa4e-3c682955950f.png)
 
   - `report_checks -path_delay min_max -format full_clock_expanded -digits 4` : to report min max paths worst slacks.
+  
     - Minpath : 
+    
      ![image](https://user-images.githubusercontent.com/107250836/178085833-71b4aea8-955c-48b3-a2a2-75760fe7d0df.png)
      ![image](https://user-images.githubusercontent.com/107250836/178085852-03effe8b-9626-4645-8fee-3134068111c4.png)
+     
     - Maxpath : 
+    
      ![image](https://user-images.githubusercontent.com/107250836/178085906-bd960223-caf7-48f9-9f55-46233d5aa7cd.png)
      ![image](https://user-images.githubusercontent.com/107250836/178085917-8fac758f-a616-4ef9-bdb6-78c804beefd4.png)
+     
  - After cts in detailed routing , actual metal traces are being laid capacitances and resistances of these come into picture. so this should increase data arrival time, which wil help in improving hold violation
 
-- We have used typical library for synthesis but for analysis we are using min, max libraries so analysis is not corret . We exit from openroad but not from openlane, invoke openroad and set typ lib and do analysis.
+- We have used typical library for synthesis but for analysis we are using min, max libraries so analysis is not corret . We exit from openroad but not from openlane, invoke openroad and set typ lib and do analysis. (Use $::env(LIB_SYNTH_COMPLETE) 
+
   ![image](https://user-images.githubusercontent.com/107250836/178086107-69285036-d222-438e-b286-5265db36405f.png)
+  
   -Min path : 
+  
   ![image](https://user-images.githubusercontent.com/107250836/178086159-39220ff4-98ea-4b22-ab90-da60a213b807.png)
+  
   -Max path : 
+  
   ![image](https://user-images.githubusercontent.com/107250836/178086178-d32ce5fe-cf68-4abd-94c6-1c0648ea8d7d.png)
   ![image](https://user-images.githubusercontent.com/107250836/178086192-e382b353-e078-46fb-aa4b-6103d017a8e1.png)
+  
+Setup slack : 5.3569 ns 
+Hold slack : -0.0112 ns
 
+#### Experiment :  remove drive1 cells in clock buffer cell list. i.e., use only 2,4,8 drive cells as clock buffer. (Do not forget to change CURRENT_DEF to placement def first)
 
+  ![image](https://user-images.githubusercontent.com/107250836/178086452-504a3665-9f10-4aac-b26e-8a77674bf1be.png)
+  ![image](https://user-images.githubusercontent.com/107250836/178086751-b42c88b1-6631-4066-ab08-db7abbec4e52.png)
 
+ - Use openroad to do timing analysis like above
+  
+  ![image](https://user-images.githubusercontent.com/107250836/178087036-3ec35e0c-4f50-455c-98f4-17daeae81d15.png)
+  
+  -Min path : 
+  
+  ![image](https://user-images.githubusercontent.com/107250836/178087083-f039a235-f2a2-44e7-a7ea-e79e36fd5333.png)
 
+  
+  -Max path : 
+
+   ![image](https://user-images.githubusercontent.com/107250836/178087102-e40d54a9-6d8d-4e4a-9065-d90ff80fa79c.png)
+   ![image](https://user-images.githubusercontent.com/107250836/178087110-48c6758d-67d0-4dbc-8a03-f310e4e3da33.png)
+
+ Setup slack : 5.6283 ns
+ Hold slack : 0.3949 ns
+ 
+- Usage for only high drive cells as clock buffers has improved slack.
+ 
 
 
 
