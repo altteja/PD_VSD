@@ -254,14 +254,15 @@ Before delay-area optimization following are the area and dealy stats for the de
 
 Setup dealy-area optimization algorithms as follows without exiting the openlane flow. Refer to `openlane/configuration/README.md` for more details on env variables.
 
-`% set ::env(SYNTH_STRATEGY) "DELAY 0"`
+`% set ::env(SYNTH_STRATEGY) "DELAY 1"`
 
 `% set ::env(SYNTH_BUFFERING) 1`
 
 `% set ::env(SYNTH_SIZING) 1`
 
 After delay-area optimization following are the area and dealy stats for the design.
-> ![OpenLane workflow](Images/after_opt.png)
+> ![image](https://user-images.githubusercontent.com/107250836/178082731-f10fa5a9-9176-4b50-9479-151a93ffdd2d.png)
+
 
 #### Floorplan
 
@@ -310,7 +311,22 @@ B1 : After executing multiple `replace_cell <instance_name> <lib_cellname>` in t
 ![image](https://user-images.githubusercontent.com/107250836/178082513-e45410a9-5acb-48b0-b88d-7e89d32312ee.png)
 ![image](https://user-images.githubusercontent.com/107250836/178082541-3975ecb2-cb21-40fc-a30a-a951e6f3fe15.png)
 
+Overwrite the existing verilog file (generated from synthesis having high tns/wns) with current verilog file from sta(with less tns/wns).
+`write_verilog <tag>/results/synthesis/<design>.synthesis.v`
+![image](https://user-images.githubusercontent.com/107250836/178082993-84172361-5d01-4365-a0b0-4f5c809dd127.png)
 
+In interactive shell, 
+- `run_floorplan` which will take replaced netlist form synthesis area (have better tns/wns).
+  - if floorplan fails, run `init_floorplan`, `place_io`,`global_placement_or`, `tap_decap_or` commands.
+  ![image](https://user-images.githubusercontent.com/107250836/178083354-126253e3-fdc7-4558-ab8d-9518e4a95867.png)
+  ![image](https://user-images.githubusercontent.com/107250836/178083364-f12a672c-c98e-45a0-81ba-386f0a1c06fb.png)
+  ![image](https://user-images.githubusercontent.com/107250836/178083445-e3fb6a61-b4ad-4080-9573-e9f33649b51e.png)
+  ![image](https://user-images.githubusercontent.com/107250836/178083462-8f390d3c-3812-4141-addf-c71398c74ec9.png)
+  ![image](https://user-images.githubusercontent.com/107250836/178083478-07c80011-36bc-4e2f-a809-d8e7040686d4.png)
+- `run_placement` 
+  ![image](https://user-images.githubusercontent.com/107250836/178083595-a17d5b94-263b-4fe0-9c2a-1f36b12ac14f.png)
+
+- ``
 
 
 
