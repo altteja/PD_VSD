@@ -137,7 +137,7 @@ designs/<design_name>
 > ![OpenLane workflow](Images/magic_placement.png)
 
 ### 5. CTS
-- `run_cts` : performs congestion aware (not timing aware) placement.
+- `run_cts` : performs congestion aware (not timing aware) placement. generates def with clock tree buffers in cts results folder and and new verilog file in synthesis results folder
 .
 .
 .
@@ -326,7 +326,38 @@ In interactive shell,
 - `run_placement` 
   ![image](https://user-images.githubusercontent.com/107250836/178083595-a17d5b94-263b-4fe0-9c2a-1f36b12ac14f.png)
 
-- ``
+- `run_cts` : after CTS stage, (a)new verilog file with cts data in `results/synthesis` folder is generated. (b)in `results/cts` folder def is generated.
+  - Verify values of max cap, max slew and clock buffers used using commands from `openlane/scripts/openroad/or_cts.tcl` file.
+    
+    ![image](https://user-images.githubusercontent.com/107250836/178083690-a7a0ed0c-c03a-4707-b118-402e6ea4292e.png)
+    ![image](https://user-images.githubusercontent.com/107250836/178083852-d14aead0-8959-488e-828b-69a328537333.png)
+- `openroad` : Invoke  openroad to do timing analysis to use existing env variables instead of defining in separating config file.
+  - `read_lef` and `read_def` commands are used to read in merged.lef in tmp folder and <design>.cts.def in `results/cts` folder.
+     ![image](https://user-images.githubusercontent.com/107250836/178085000-c757e5ee-2587-4589-b83c-cfe6c3b91f34.png)
+  - `write_db <design>.db` : to save the database and `read_db <design>.db` : to read in existing database.
+  -  `read_verilog` : to read in verilog file form CTS stage in results/synthesis folder.
+  -  `read_liberty` : To read in liberty files, -min : fast.lib ; -max : slow.lib
+  -  `read_sdc` : Read in sdc file.
+    ![image](https://user-images.githubusercontent.com/107250836/178085765-08cc1bb3-04bf-4309-aa4e-3c682955950f.png)
+
+  - `report_checks -path_delay min_max -format full_clock_expanded -digits 4` : to report min max paths worst slacks.
+    - Minpath : 
+     ![image](https://user-images.githubusercontent.com/107250836/178085833-71b4aea8-955c-48b3-a2a2-75760fe7d0df.png)
+     ![image](https://user-images.githubusercontent.com/107250836/178085852-03effe8b-9626-4645-8fee-3134068111c4.png)
+    - Maxpath : 
+     ![image](https://user-images.githubusercontent.com/107250836/178085906-bd960223-caf7-48f9-9f55-46233d5aa7cd.png)
+     ![image](https://user-images.githubusercontent.com/107250836/178085917-8fac758f-a616-4ef9-bdb6-78c804beefd4.png)
+ - After cts in detailed routing , actual metal traces are being laid capacitances and resistances of these come into picture. so this should increase data arrival time, which wil help in improving hold violation
+
+- We have used typical library for synthesis but for analysis we are using min, max libraries so analysis is not corret . We exit from openroad but not from openlane, invoke openroad and set typ lib and do analysis.
+  ![image](https://user-images.githubusercontent.com/107250836/178086107-69285036-d222-438e-b286-5265db36405f.png)
+  -Min path : 
+  ![image](https://user-images.githubusercontent.com/107250836/178086159-39220ff4-98ea-4b22-ab90-da60a213b807.png)
+  -Max path : 
+  ![image](https://user-images.githubusercontent.com/107250836/178086178-d32ce5fe-cf68-4abd-94c6-1c0648ea8d7d.png)
+  ![image](https://user-images.githubusercontent.com/107250836/178086192-e382b353-e078-46fb-aa4b-6103d017a8e1.png)
+
+
 
 
 
