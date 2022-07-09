@@ -139,7 +139,8 @@ designs/<design_name>
 ### 5. CTS
 - `run_cts` : performs congestion aware (not timing aware) placement. generates def with clock tree buffers in cts results folder and and new verilog file in synthesis results folder
 .
-.
+### 6. Routing
+- `run_routing` : Performs (a) global/fast routing : creates routing guides (b) detailed routing : Algorithm to pick best route from routing guides and routes metal geometries in preferred direction.
 .
 .
 
@@ -315,6 +316,8 @@ Overwrite the existing verilog file (generated from synthesis having high tns/wn
 `write_verilog <tag>/results/synthesis/<design>.synthesis.v`
 ![image](https://user-images.githubusercontent.com/107250836/178082993-84172361-5d01-4365-a0b0-4f5c809dd127.png)
 
+---
+
 In interactive shell, 
 - `run_floorplan` which will take replaced netlist form synthesis area (have better tns/wns).
   - if floorplan fails, run `init_floorplan`, `place_io`,`global_placement_or`, `tap_decap_or` commands.
@@ -419,10 +422,7 @@ Hold slack : -0.0112 ns
 
 - `run_routing` : (a) global route creates routing guides, (b) detail route algorithm picks best possible route and places geometries.
 
- 
-
-
-
+  ![image](https://user-images.githubusercontent.com/107250836/178089350-2ac4d832-cfc2-4e79-959a-b4896b84e38f.png)
 
 
 ---
