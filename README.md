@@ -363,12 +363,12 @@ In interactive shell,
 
   - `report_checks -path_delay min_max -format full_clock_expanded -digits 4` : to report min max paths worst slacks.
   
-    - Minpath : 
+    - Min path : 
     
      ![image](https://user-images.githubusercontent.com/107250836/178085833-71b4aea8-955c-48b3-a2a2-75760fe7d0df.png)
      ![image](https://user-images.githubusercontent.com/107250836/178085852-03effe8b-9626-4645-8fee-3134068111c4.png)
      
-    - Maxpath : 
+    - Max path : 
     
      ![image](https://user-images.githubusercontent.com/107250836/178085906-bd960223-caf7-48f9-9f55-46233d5aa7cd.png)
      ![image](https://user-images.githubusercontent.com/107250836/178085917-8fac758f-a616-4ef9-bdb6-78c804beefd4.png)
@@ -392,7 +392,9 @@ In interactive shell,
 Setup slack : 5.3569 ns 
 Hold slack : -0.0112 ns
 ```
-#### Experiment :  remove drive1 cells in clock buffer cell list. i.e., use only 2,4,8 drive cells as clock buffer. (Do not forget to change CURRENT_DEF to placement def first)
+#### Experiment :  remove drive1 cells in clock buffer cell list. 
+
+i.e., use only 2,4,8 drive cells as clock buffer. (Do not forget to change CURRENT_DEF to placement def first)
 
   ![image](https://user-images.githubusercontent.com/107250836/178086452-504a3665-9f10-4aac-b26e-8a77674bf1be.png)
   ![image](https://user-images.githubusercontent.com/107250836/178086751-b42c88b1-6631-4066-ab08-db7abbec4e52.png)
