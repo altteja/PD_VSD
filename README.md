@@ -274,14 +274,19 @@ After delay-area optimization following are the area and dealy stats for the des
 #### Steps to complete flow without errors
 
 ```
-init_floorplan
-place_io
-global_placement_or
-detailed_placement
-tap_decap_or
-detailed_placement
-gen_pdn
-run_routing
+Floor plan stage:
+   init_floorplan
+   place_io
+   global_placement_or
+   tap_decap_or
+   
+Placement stage:
+   detailed_placement
+
+PG routing :
+   gen_pdn
+Routing :
+   run_routing
 ```
 > ![OpenLane workflow](Images/floorplan_with_custom_cells.png )
 
