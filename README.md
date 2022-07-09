@@ -428,6 +428,8 @@ Hold slack : -0.0112 ns
 - `run_routing` : (a) global route creates routing guides, (b) detail route algorithm picks best possible route and places geometries.
 
   ![image](https://user-images.githubusercontent.com/107250836/178089350-2ac4d832-cfc2-4e79-959a-b4896b84e38f.png)
+  ![image](https://user-images.githubusercontent.com/107250836/178092907-6bab5f77-1806-453d-bafc-4e5185ba792c.png)
+
 
 
 ---
